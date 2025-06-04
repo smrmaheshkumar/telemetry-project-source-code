@@ -40,11 +40,11 @@ Create IAM Role
 
 ```
 eksctl create iamserviceaccount \
-  --cluster=<your-cluster-name> \
+  --cluster=my-eks-cluster \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name AmazonEKSLoadBalancerControllerRole \
-  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 ```
 
@@ -67,11 +67,11 @@ Install
 ```
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
   -n kube-system \
-  --set clusterName=<your-cluster-name> \
+  --set clusterName=my-eks-cluster \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller \
-  --set region=<region> \
-  --set vpcId=<your-vpc-id>
+  --set region=us-west-2 \
+  --set vpcId=vpc-0df44b2e552ad86be
 ```
 
 Verify that the deployments are running.
@@ -85,16 +85,16 @@ You might face the issue, unable to see the loadbalancer address while giving k 
 ## Run the following command to retrieve the policy details and look for **elasticloadbalancing:DescribeListenerAttributes** in the policy document.
 ```
 aws iam get-policy-version \
-    --policy-arn arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
-    --version-id $(aws iam get-policy --policy-arn arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy --query 'Policy.DefaultVersionId' --output text)
+    --policy-arn arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy \
+    --version-id $(aws iam get-policy --policy-arn arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy --query 'Policy.DefaultVersionId' --output text)
 ```
 
 If the required permission is missing, update the policy to include it
 ## Download the current policy
 ```
 aws iam get-policy-version \
-    --policy-arn arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
-    --version-id $(aws iam get-policy --policy-arn arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy --query 'Policy.DefaultVersionId' --output text) \
+    --policy-arn arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy \
+    --version-id $(aws iam get-policy --policy-arn arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy --query 'Policy.DefaultVersionId' --output text) \
     --query 'PolicyVersion.Document' --output json > policy.json
 ```
 ## Edit policy.json to add the missing permissions
@@ -108,7 +108,7 @@ aws iam get-policy-version \
 ## Create a new policy version
 ```
 aws iam create-policy-version \
-    --policy-arn arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+    --policy-arn arn:aws:iam::637423582993:policy/AWSLoadBalancerControllerIAMPolicy \
     --policy-document file://policy.json \
     --set-as-default
 ```
