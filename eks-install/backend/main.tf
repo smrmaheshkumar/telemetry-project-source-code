@@ -1,15 +1,18 @@
+# Provider Declaration
 provider "aws" {
   region = "us-west-2"
 }
 
+# S3 Bucket Creation
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "demo-terraform-eks-state-s3-bucket"
+  bucket = "roshinimahesh-eks-state-s3-bucket"
 
   lifecycle {
     prevent_destroy = false
   }
 }
 
+# S3 Bucket Versioning
 resource "aws_s3_bucket_versioning" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
   versioning_configuration {
@@ -17,6 +20,7 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
   }
 }
 
+# Encrypting S3 Bucket
 resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
 
@@ -27,6 +31,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
   }
 }
 
+# DynamoDB Table Creation
 resource "aws_dynamodb_table" "terraform_locks" {
   name         = "terraform-eks-state-locks"
   billing_mode = "PAY_PER_REQUEST"
