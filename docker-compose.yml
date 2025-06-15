@@ -3,7 +3,7 @@ services:
   # Core Demo Services
   # ******************
   # Accounting service
-  accounting:
+  accounting: 
     image: ${IMAGE_NAME}:${DEMO_VERSION}-accounting
     container_name: accounting
     build:
